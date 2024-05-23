@@ -1,0 +1,30 @@
+const int lm35Pin = A0; 
+const int ledPin = 7;   
+const float temperatureThreshold = 25.0;
+const int numReadings = 10;
+void setup() {
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT);
+}
+void loop() {
+  float voltageSum = 0.0;
+
+  for (int i = 0; i < numReadings; i++) {
+    int sensorValue = analogRead(lm35Pin);
+    float voltage = sensorValue * (5.0 / 1023.0);
+    voltageSum += voltage;
+    delay(10); 
+  }
+  
+  float averageVoltage = voltageSum / numReadings;
+  float temperature = averageVoltage * 100.0;
+  Serial.print("Temperatura: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+  if (temperature > temperatureThreshold) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+  delay(1000);
+}
